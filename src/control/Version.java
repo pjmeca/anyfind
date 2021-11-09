@@ -31,7 +31,7 @@ public class Version {
 			Scanner s = new Scanner(new File(urlCurrVersion));
 			content = s.useDelimiter("\\Z").next();
 			s.close();
-			return content;
+			return content+"\n"; // GitHub automatically adds \n at the end of files
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -43,6 +43,7 @@ public class Version {
 		try {
 			return !readStringFromURL(urlCheckVersion).equals(getCurrentVersion());
 		} catch (IOException e) {
+			System.err.println("Error checking program version!");
 			return false;
 		}
 	}
