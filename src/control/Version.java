@@ -2,13 +2,14 @@ package control;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Scanner;
 import java.io.*;
 
 public class Version {
     
-	private static final String urlCheckVersion = "https://pjmeca.github.io/anyfind/latestVersion.txt";
-	private static final String currentVersion = "2021-11 (0.9)\n";
+	private static final String urlCheckVersion = "https://pjmeca.github.io/anyfind/assets/version.txt";
+	private static final String urlCurrVersion = "assets/version.txt";
 	
 	public static String readStringFromURL(String requestURL) throws IOException
 	{
@@ -25,12 +26,22 @@ public class Version {
     }
 	
 	public static String getCurrentVersion() {
-		return currentVersion;
+		String content;
+		try {
+			Scanner s = new Scanner(new File(urlCurrVersion));
+			content = s.useDelimiter("\\Z").next();
+			s.close();
+			return content;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	public static boolean isNewVersionAvailable() {
 		try {
-			return !readStringFromURL(urlCheckVersion).equals(currentVersion);
+			return !readStringFromURL(urlCheckVersion).equals(getCurrentVersion());
 		} catch (IOException e) {
 			return false;
 		}
