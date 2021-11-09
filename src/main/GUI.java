@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -38,6 +39,7 @@ public class GUI {
 	private JCheckBox checkDir = new JCheckBox("Include Directories?");
 	private JButton btnDelete = new JButton("Find!");
 	private JScrollPane scrollPane;
+	private JEditorPane editorPane;
 
 	public GUI(Program p) {
 		this.p = p;
@@ -137,7 +139,12 @@ public class GUI {
 		btnDelete.setBounds(10, 381, 628, 30);
 		frame.getContentPane().add(btnDelete);
 
-		scrollPane = new JScrollPane();
+		editorPane = new JEditorPane();
+		editorPane.setContentType("text/html");
+		editorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+		editorPane.setFont(lblPath.getFont());
+		
+		scrollPane = new JScrollPane(editorPane);
 		scrollPane.setBounds(7, 105, 632, 261);
 		frame.getContentPane().add(scrollPane);
 
@@ -170,6 +177,6 @@ public class GUI {
 	}
 
 	public void showResultados(String title, String message) {
-		scrollPane.setViewportView(new JLabel(message));
+		editorPane.setText(message);
 	}
 }
