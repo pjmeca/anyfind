@@ -16,15 +16,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import control.MessageWithLink;
+import control.Version;
+
 import java.awt.Font;
 
 public class GUI {
 
 	public static final String LOGO_PATH = "assets/eye.png";
-	
+
 	private final Program p;
 	private JFrame frame = new JFrame(Program.programName);
-	
+
 	private JTextField txtDefaultPrompt = new JTextField(); // textfield auxiliar para ocultar el prompt por defecto
 	protected JTextField txtPath = new JTextField();
 	private TextPrompt samplePath = new TextPrompt("C:\\Users\\user\\ExampleDirectory", txtPath,
@@ -53,7 +55,7 @@ public class GUI {
 	public void init() {
 		// Create and set up the window.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false); //TODO Make adaptable
+		frame.setResizable(false); // TODO Make adaptable
 		frame.getContentPane().setLayout(null);
 
 		// Icono TODO cambiar imagen
@@ -63,6 +65,13 @@ public class GUI {
 		// Menu Bar
 		JMenuBar mb = new JMenuBar();
 		JMenu mHelp = new JMenu("Help");
+		JMenuItem mCheckUpdates = new JMenuItem("Check for Updates");
+		mCheckUpdates.addActionListener(e -> {
+			if (Version.isNewVersionAvailable())
+				Program.showUpdate();
+			else
+				showDialog("No Updates", "There are no updates available.\nCurrent version: "+Version.getCurrentVersion(), JOptionPane.INFORMATION_MESSAGE);
+		});
 		JMenuItem mRegex = new JMenuItem("Regex");
 		mRegex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -76,28 +85,29 @@ public class GUI {
 			}
 		});
 		mb.add(mHelp);
+		mHelp.add(mCheckUpdates);
 		mHelp.add(mRegex);
 		mHelp.add(mAbout);
 		frame.setJMenuBar(mb);
 
 		checkDir.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				p.includeDirectories();
 			}
 		});
-		
+
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				p.reader();
 				p.finder();
 			}
 		});
-		
+
 		initRegex();
 	}
-	
+
 	private void initRegex() {
 		frame.setSize(658, 477);
 
@@ -122,15 +132,15 @@ public class GUI {
 		// Check Directories
 		checkDir.setBounds(5, 53, 140, 20);
 		frame.getContentPane().add(checkDir);
-		
+
 		// Button
 		btnDelete.setBounds(10, 381, 628, 30);
 		frame.getContentPane().add(btnDelete);
-		
+
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(7, 105, 632, 261);
 		frame.getContentPane().add(scrollPane);
-		
+
 		JLabel lblResults = new JLabel("Results:");
 		lblResults.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblResults.setBounds(10, 80, 112, 20);
@@ -141,10 +151,20 @@ public class GUI {
 		frame.setVisible(true);
 	}
 
-	public void showDialog(String title, String message, int messageType) {
-		JOptionPane.showMessageDialog(frame, message, title, messageType);
+	public void showDialog(String title, String message, int messageType, String... url) {
+		if (url.length > 0) {
+			int selectedOption = JOptionPane.showConfirmDialog(null, message, title, messageType);
+			if (selectedOption == JOptionPane.YES_OPTION) {
+				try {
+					java.awt.Desktop.getDesktop().browse(new java.net.URI(url[0]));
+				} catch (Exception e) {
+					showDialog("Error", "Cannot open the specified website!\nPlease, try again later or check for program updates if the error persists.", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		} else
+			JOptionPane.showMessageDialog(frame, message, title, messageType);
 	}
-	
+
 	public void showDialog(String title, MessageWithLink message, int messageType) {
 		JOptionPane.showMessageDialog(frame, message, title, messageType);
 	}

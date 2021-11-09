@@ -2,7 +2,6 @@ package main;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import control.MessageWithLink;
 import control.Version;
 
 public class Program extends JFrame {
@@ -110,10 +109,13 @@ public class Program extends JFrame {
 	}
 
 	public static void showUpdate() {
-		g.showDialog("New Update!",
+		/*g.showDialog("New Update!",
 				new MessageWithLink("A new version of " + programName + " is available " + "<a href=\\\"" + downloadURL
 						+ "\\\">here</a>.<br>Please download it to get a better experience."),
 				JOptionPane.INFORMATION_MESSAGE);
+		 */
+		g.showDialog("New Update!", "A new version of " + programName + " is available!\n"
+				+ "Would you like to download it now?", JOptionPane.YES_NO_OPTION, downloadURL);
 	}
 
 	public static void main(String[] args) {

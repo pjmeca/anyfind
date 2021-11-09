@@ -2,7 +2,6 @@ package control;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Scanner;
 import java.io.*;
 
@@ -21,7 +20,7 @@ public class Version {
 	    }
 	}
 	
-	public static String getLastVersion() throws IOException {
+	public static String getNewestVersion() throws IOException {
 		return readStringFromURL(urlCheckVersion);
     }
 	
@@ -31,7 +30,7 @@ public class Version {
 			Scanner s = new Scanner(new File(urlCurrVersion));
 			content = s.useDelimiter("\\Z").next();
 			s.close();
-			return content+"\n"; // GitHub automatically adds \n at the end of files
+			return content; 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -41,7 +40,7 @@ public class Version {
 	
 	public static boolean isNewVersionAvailable() {
 		try {
-			return !readStringFromURL(urlCheckVersion).equals(getCurrentVersion());
+			return !readStringFromURL(urlCheckVersion).equals(getCurrentVersion()+"\n"); // GitHub automatically adds \n at the end of files
 		} catch (IOException e) {
 			System.err.println("Error checking program version!");
 			return false;
